@@ -1,11 +1,21 @@
 ﻿using System;
+using System.Linq;
+using Minsk.CodeAnalysis;
 
-namespace mc
+namespace Minsk
 {
+    // 1 + 2 * 3
+    //   +
+    //  / \
+    // 1  *
+    //   / \
+    //  2   3
+
     class Program
     {
         static void Main(string[] args)
         {
+            bool showTree = false;
             while (true)
             {
                 Console.Write("> ");
@@ -15,78 +25,64 @@ namespace mc
                     return;
                 }
 
-                if (line == "1 + 2 * 3")
+                if (line == "#showTree")
                 {
-                    Console.WriteLine("7");
+                    showTree = !showTree;
+                    Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees");
+                    continue;
+                }
+                else if (line == "#cls")
+                {
+                    Console.Clear();
+                    continue;
+                }
+
+                var syntaxTree = SyntaxTree.Parse(line);
+
+                var colour = Console.ForegroundColor;
+                if (showTree)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    PrettyPrint(syntaxTree.Root);
+                    Console.ForegroundColor = colour;
+                }
+
+                if (!syntaxTree.Diagnostics.Any())
+                {
+                    var result = syntaxTree.Evaluate();
+                    Console.WriteLine(result);
                 }
                 else
                 {
-                    Console.WriteLine("ERROR: Invalid expression");
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    foreach (var diagnostic in syntaxTree.Diagnostics)
+                    {
+                        Console.Error.WriteLine(diagnostic);
+                    }
+                    Console.ForegroundColor = colour;
                 }
             }
         }
-    }
 
-    enum SyntaxKind
-    {
-        NumberToken
-    }
-
-    class SyntaxToken
-    {
-        public SyntaxToken(SyntaxKind kind, int position, string text)
+        static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true)
         {
-            Kind = kind;
-            Position = position;
-            Text = text;
-        }
+            var marker = isLast ? "└──" : "├──";
 
-        public SyntaxKind Kind { get; }
-        public int Position { get; }
-        public string Text { get; }
-    }
+            Console.Write($"{indent}{marker}{node.Kind}");
 
-    class Lexer
-    {
-        private readonly string _text;
-        private int _position;
-        public Lexer(string text)
-        {
-            _text = text;
-        }
-
-        private char Current
-        {
-            get
+            if (node is SyntaxToken t && t.Value != null)
             {
-                if (_position >= _text.Length)
-                    return '\0';
-
-                return _text[_position];
+                Console.Write($" {t.Value}");
             }
-        }
 
-        private void Next()
-        {
-            _position++;
-        }
+            Console.WriteLine();
 
-        public SyntaxToken NextToken()
-        {
-            // <numbers>
-            // + - * / ()
-            // <whitespace>
+            indent += isLast ? "   " : "│  ";
 
-            if (char.IsDigit(Current))
+            var lastChild = node.GetChildren().LastOrDefault();
+            foreach (var child in node.GetChildren())
             {
-                var start = _position;
-
-                while (char.IsDigit(Current))
-                    Next();
-
-                var length = _position - start;
-                var text = _text[start..length];
-                return new SyntaxToken(SyntaxKind.NumberToken, start, text);
+                PrettyPrint(child, indent, child == lastChild);
             }
         }
     }
