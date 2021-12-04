@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace Minsk.CodeAnalysis
 {
-    class Lexer
+    internal sealed class Lexer
     {
         private readonly string _text;
         private int _position;
@@ -62,7 +62,7 @@ namespace Minsk.CodeAnalysis
                 {
                     _diagnostics.Add($"ERROR: The number {_text} isn't a valid Int32.");
                 }
-                return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
+                return new SyntaxToken(SyntaxKind.LiteralToken, start, text, value);
             }
 
             if (char.IsWhiteSpace(Current))

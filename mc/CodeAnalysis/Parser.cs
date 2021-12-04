@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace Minsk.CodeAnalysis
 {
-    class Parser
+    internal sealed class Parser
     {
         private readonly SyntaxToken[] _tokens;
         private int _position;
@@ -44,7 +44,7 @@ namespace Minsk.CodeAnalysis
         public SyntaxTree Parse()
         {
             var expression = ParseExpression();
-            var eofToken = MatchKind(SyntaxKind.EndOfFileToken);
+            var eofToken = MatchToken(SyntaxKind.EndOfFileToken);
             return new SyntaxTree(Diagnostics, expression, eofToken);
         }
 
@@ -93,15 +93,15 @@ namespace Minsk.CodeAnalysis
             {
                 var left = NextToken();
                 var expression = ParseExpression();
-                var right = MatchKind(SyntaxKind.CloseParenthesisToken);
+                var right = MatchToken(SyntaxKind.CloseParenthesisToken);
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
 
-            var numberToken = MatchKind(SyntaxKind.NumberToken);
-            return new NumberExpressionSyntax(numberToken);
+            var numberToken = MatchToken(SyntaxKind.LiteralToken);
+            return new LiteralExpressionSyntax(numberToken);
         }
 
-        private SyntaxToken MatchKind(SyntaxKind kind)
+        private SyntaxToken MatchToken(SyntaxKind kind)
         {
             if (Current.Kind == kind)
             {

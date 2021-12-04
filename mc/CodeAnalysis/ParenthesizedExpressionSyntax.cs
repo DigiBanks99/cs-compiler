@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Minsk.CodeAnalysis
 {
-    sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
+    public sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
     {
         public ParenthesizedExpressionSyntax(SyntaxToken openParenthesizeToken, ExpressionSyntax expression, SyntaxToken closeParenthesizeToken)
         {
