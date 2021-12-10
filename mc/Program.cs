@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Minsk.CodeAnalysis;
+using Minsk.CodeAnalysis.Syntax;
 
 namespace Minsk
 {
@@ -39,7 +40,6 @@ namespace Minsk
 
                 var syntaxTree = SyntaxTree.Parse(line);
 
-                var colour = Console.ForegroundColor;
                 if (showTree)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
