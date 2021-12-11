@@ -1,3 +1,5 @@
+using System;
+
 namespace Minsk.CodeAnalysis.Syntax
 {
     internal static class SyntaxFacts
@@ -18,6 +20,16 @@ namespace Minsk.CodeAnalysis.Syntax
                 SyntaxKind.StarToken or SyntaxKind.SlashToken => 2,
                 SyntaxKind.PlusToken or SyntaxKind.MinusToken => 1,
                 _ => 0,
+            };
+        }
+
+        public static SyntaxKind GetKeywordKind(string text)
+        {
+            return text switch
+            {
+                "true" => SyntaxKind.TrueKeyword,
+                "false" => SyntaxKind.FalseKeyword,
+                _ => SyntaxKind.IdentifierToken,
             };
         }
     }
