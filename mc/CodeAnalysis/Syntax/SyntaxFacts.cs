@@ -4,30 +4,21 @@ namespace Minsk.CodeAnalysis.Syntax
     {
         public static int GetUnaryOperatorPrecedence(this SyntaxKind kind)
         {
-            switch (kind)
+            return kind switch
             {
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 3;
-
-                default: return 0;
-            }
+                SyntaxKind.PlusToken or SyntaxKind.MinusToken => 3,
+                _ => 0,
+            };
         }
 
         public static int GetBinaryOperatorPrecedence(this SyntaxKind kind)
         {
-            switch (kind)
+            return kind switch
             {
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 2;
-
-                case SyntaxKind.StarToken:
-                case SyntaxKind.SlashToken:
-                    return 1;
-
-                default: return 0;
-            }
+                SyntaxKind.StarToken or SyntaxKind.SlashToken => 2,
+                SyntaxKind.PlusToken or SyntaxKind.MinusToken => 1,
+                _ => 0,
+            };
         }
     }
 }

@@ -18,7 +18,8 @@ namespace Minsk.CodeAnalysis.Syntax
 
         public static SyntaxTree Parse(string text)
         {
-            return new Parser(text).Parse();
+            var parser = new Parser(text);
+            return parser.Parse();
         }
     }
 }

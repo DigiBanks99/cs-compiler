@@ -6,7 +6,7 @@ namespace Minsk.CodeAnalysis.Syntax
         BadToken,
         EndOfFileToken,
         WhitespaceToken,
-        LiteralToken,
+        NumberToken,
         PlusToken,
         MinusToken,
         StarToken,

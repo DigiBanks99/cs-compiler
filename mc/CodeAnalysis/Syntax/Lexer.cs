@@ -58,7 +58,7 @@ namespace Minsk.CodeAnalysis.Syntax
                 {
                     _diagnostics.Add($"ERROR: The number {_text} isn't a valid Int32.");
                 }
-                return new SyntaxToken(SyntaxKind.LiteralToken, start, text, value);
+                return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
             }
 
             if (char.IsWhiteSpace(Current))

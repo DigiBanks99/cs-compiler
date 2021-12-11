@@ -89,7 +89,7 @@ namespace Minsk.CodeAnalysis.Syntax
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
 
-            var numberToken = MatchToken(SyntaxKind.LiteralToken);
+            var numberToken = MatchToken(SyntaxKind.NumberToken);
             return new LiteralExpressionSyntax(numberToken);
         }
 
