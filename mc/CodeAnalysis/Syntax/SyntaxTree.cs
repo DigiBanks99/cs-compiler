@@ -20,10 +20,5 @@ namespace Minsk.CodeAnalysis.Syntax
         {
             return new Parser(text).Parse();
         }
-
-        internal object Evaluate()
-        {
-            return new Evaluator(Root).Evaluate();
-        }
     }
 }

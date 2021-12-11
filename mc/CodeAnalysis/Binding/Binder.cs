@@ -81,7 +81,7 @@ namespace Minsk.CodeAnalysis.Binding
 
     internal sealed class Binder
     {
-        private readonly List<string> _diagnostics = new List<string>();
+        private readonly List<string> _diagnostics = new();
 
         public BoundExpression BindExpression(ExpressionSyntax syntax)
         {
@@ -94,7 +94,7 @@ namespace Minsk.CodeAnalysis.Binding
             };
         }
 
-        public IEnumerable<string> Diagnostics => _diagnostics.ToImmutableList();
+        public IReadOnlyCollection<string> Diagnostics => _diagnostics.ToImmutableList();
 
         private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
         {
