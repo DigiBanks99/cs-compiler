@@ -7,7 +7,7 @@ namespace Minsk.CodeAnalysis.Syntax
     {
         private readonly string _text;
         private int _position;
-        private List<string> _diagnostics = new List<string>();
+        private readonly List<string> _diagnostics = new();
 
         public Lexer(string text)
         {

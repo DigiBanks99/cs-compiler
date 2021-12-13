@@ -27,12 +27,12 @@ namespace Minsk.CodeAnalysis
             if (node is BoundUnaryExpression u)
             {
                 var operand = EvaluateExpression(u.Operand);
-                return u.OperatorKind switch
+                return u.Op.Kind switch
                 {
                     BoundUnaryOperatorKind.Identity => (int)operand,
                     BoundUnaryOperatorKind.Negation => -(int)operand,
                     BoundUnaryOperatorKind.LogicalNegation => !(bool)operand,
-                    _ => throw new Exception($"Unexpected unary operator {u.OperatorKind}")
+                    _ => throw new Exception($"Unexpected unary operator {u.Op}")
                 };
             }
 
@@ -41,7 +41,7 @@ namespace Minsk.CodeAnalysis
                 var left = EvaluateExpression(b.Left);
                 var right = EvaluateExpression(b.Right);
 
-                return b.OperatorKind switch
+                return b.Op.Kind switch
                 {
                     BoundBinaryOperatorKind.Addition => (int)left + (int)right,
                     BoundBinaryOperatorKind.Subtraction => (int)left - (int)right,
@@ -49,7 +49,7 @@ namespace Minsk.CodeAnalysis
                     BoundBinaryOperatorKind.Division => (int)left / (int)right,
                     BoundBinaryOperatorKind.LogicalAnd => (bool)left && (bool)right,
                     BoundBinaryOperatorKind.LogicalOr => (bool)left || (bool)right,
-                    _ => throw new Exception($"Unexpected binary operator {b.OperatorKind}")
+                    _ => throw new Exception($"Unexpected binary operator {b.Op}")
                 };
             }
 
