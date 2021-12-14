@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Minsk.CodeAnalysis
+namespace Minsk.CodeAnalysis.Syntax
 {
     internal sealed class Parser
     {
@@ -17,7 +17,7 @@ namespace Minsk.CodeAnalysis
             SyntaxToken token;
             do
             {
-                token = lexer.NextToken();
+                token = lexer.Lex();
 
                 if (token.Kind != SyntaxKind.BadToken &&
                     token.Kind != SyntaxKind.WhitespaceToken)
@@ -48,39 +48,31 @@ namespace Minsk.CodeAnalysis
             return new SyntaxTree(Diagnostics, expression, eofToken);
         }
 
-        /// <summary>
-        /// Helper method that is intended to parse full expressions.
-        /// </summary>
-        /// <returns>The parsed expression.</returns>
-        private ExpressionSyntax ParseExpression()
+        private ExpressionSyntax ParseExpression(int parentPrecedence = 0)
         {
-            return ParseTerm();
-        }
-
-        private ExpressionSyntax ParseTerm()
-        {
-            var left = ParseFactor();
-
-            while (Current.Kind == SyntaxKind.PlusToken ||
-                   Current.Kind == SyntaxKind.MinusToken)
+            ExpressionSyntax left;
+            var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
+            if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
             {
                 var operatorToken = NextToken();
-                var right = ParseFactor();
-                left = new BinaryExpressionSyntax(left, operatorToken, right);
+                var operand = ParseExpression(unaryOperatorPrecedence);
+                left = new UnaryExpressionSyntax(operatorToken, operand);
+            }
+            else
+            {
+                left = ParsePrimaryExpression();
             }
 
-            return left;
-        }
-
-        private ExpressionSyntax ParseFactor()
-        {
-            var left = ParsePrimaryExpression();
-
-            while (Current.Kind == SyntaxKind.StarToken ||
-                   Current.Kind == SyntaxKind.SlashToken)
+            while (true)
             {
+                var precedence = Current.Kind.GetBinaryOperatorPrecedence();
+                if (precedence == 0 || precedence <= parentPrecedence)
+                {
+                    break;
+                }
+
                 var operatorToken = NextToken();
-                var right = ParsePrimaryExpression();
+                var right = ParseExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
@@ -89,16 +81,24 @@ namespace Minsk.CodeAnalysis
 
         private ExpressionSyntax ParsePrimaryExpression()
         {
-            if (Current.Kind == SyntaxKind.OpenParenthesisToken)
+            switch (Current.Kind)
             {
-                var left = NextToken();
-                var expression = ParseExpression();
-                var right = MatchToken(SyntaxKind.CloseParenthesisToken);
-                return new ParenthesizedExpressionSyntax(left, expression, right);
-            }
+                case SyntaxKind.OpenParenthesisToken:
+                    var left = NextToken();
+                    var expression = ParseExpression();
+                    var right = MatchToken(SyntaxKind.CloseParenthesisToken);
+                    return new ParenthesizedExpressionSyntax(left, expression, right);
 
-            var numberToken = MatchToken(SyntaxKind.LiteralToken);
-            return new LiteralExpressionSyntax(numberToken);
+                case SyntaxKind.FalseKeyword:
+                case SyntaxKind.TrueKeyword:
+                    var keywordToken = NextToken();
+                    var value = keywordToken.Kind == SyntaxKind.TrueKeyword;
+                    return new LiteralExpressionSyntax(keywordToken, value);
+
+                default:
+                    var numberToken = MatchToken(SyntaxKind.NumberToken);
+                    return new LiteralExpressionSyntax(numberToken);
+            }
         }
 
         private SyntaxToken MatchToken(SyntaxKind kind)

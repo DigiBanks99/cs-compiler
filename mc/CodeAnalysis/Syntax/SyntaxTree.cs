@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-namespace Minsk.CodeAnalysis
+namespace Minsk.CodeAnalysis.Syntax
 {
     public sealed class SyntaxTree
     {
@@ -18,12 +18,8 @@ namespace Minsk.CodeAnalysis
 
         public static SyntaxTree Parse(string text)
         {
-            return new Parser(text).Parse();
-        }
-
-        internal object Evaluate()
-        {
-            return new Evaluator(Root).Evaluate();
+            var parser = new Parser(text);
+            return parser.Parse();
         }
     }
 }
