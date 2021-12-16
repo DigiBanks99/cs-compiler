@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+
 using Minsk.CodeAnalysis;
 using Minsk.CodeAnalysis.Binding;
 using Minsk.CodeAnalysis.Syntax;
@@ -41,10 +42,10 @@ namespace Minsk
                     continue;
                 }
 
-                var syntaxTree = SyntaxTree.Parse(line);
-                var binder = new Binder();
-                var boundExpression = binder.BindExpression(syntaxTree.Root);
-                IReadOnlyList<string> diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToImmutableArray();
+                SyntaxTree syntaxTree = SyntaxTree.Parse(line);
+                Compilation compilation = new(syntaxTree);
+                EvaluationResult result = compilation.Evaluate();
+                IReadOnlyList<string> diagnostics = result.Diagnostics;
 
                 if (showTree)
                 {
@@ -55,9 +56,7 @@ namespace Minsk
 
                 if (!diagnostics.Any())
                 {
-                    var e = new Evaluator(boundExpression);
-                    var result = e.Evaluate();
-                    Console.WriteLine(result);
+                    Console.WriteLine(result.Value);
                 }
                 else
                 {
