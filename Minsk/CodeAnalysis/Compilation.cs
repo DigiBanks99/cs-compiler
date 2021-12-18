@@ -1,7 +1,7 @@
-using System.Collections.Immutable;
-
 using Minsk.CodeAnalysis.Binding;
 using Minsk.CodeAnalysis.Syntax;
+
+using System.Collections.Immutable;
 
 namespace Minsk.CodeAnalysis;
 
@@ -27,6 +27,6 @@ public class Compilation
         var evaluator = new Evaluator(boundExpression);
         var value = evaluator.Evaluate();
 
-        return new EvaluationResult(Array.Empty<string>(), value);
+        return new EvaluationResult(Array.Empty<Diagnostic>(), value);
     }
 }

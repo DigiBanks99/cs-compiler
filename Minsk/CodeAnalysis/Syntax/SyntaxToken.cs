@@ -8,12 +8,15 @@ public sealed class SyntaxToken : SyntaxNode
         Position = position;
         Text = text;
         Value = value;
+
+        Span = new TextSpan(Position, Text?.Length ?? 0);
     }
 
     public override SyntaxKind Kind { get; }
     public int Position { get; }
     public string? Text { get; }
     public object? Value { get; }
+    public TextSpan Span { get; }
 
     public override IEnumerable<SyntaxNode> GetChildren()
     {

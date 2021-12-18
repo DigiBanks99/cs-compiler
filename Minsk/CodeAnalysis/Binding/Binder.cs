@@ -1,12 +1,9 @@
-using System.Collections.Immutable;
 using Minsk.CodeAnalysis.Syntax;
 
 namespace Minsk.CodeAnalysis.Binding;
 
 internal sealed class Binder
 {
-    private readonly List<string> _diagnostics = new();
-
     public BoundExpression BindExpression(ExpressionSyntax syntax)
     {
         return syntax.Kind switch
@@ -19,9 +16,9 @@ internal sealed class Binder
         };
     }
 
-    public IReadOnlyCollection<string> Diagnostics => _diagnostics.ToImmutableList();
+    public DiagnosticBag Diagnostics { get; } = new();
 
-    private BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
+    private static BoundExpression BindLiteralExpression(LiteralExpressionSyntax syntax)
     {
         var value = syntax.Value ?? 0;
         return new BoundLiteralExpression(value);
@@ -35,7 +32,7 @@ internal sealed class Binder
 
         if (boundOperator == null)
         {
-            _diagnostics.Add($"Binary operator '{syntax.OperatorToken.Text}' is not defined for types {boundLeft.Type} and {boundRight.Type}.");
+            Diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundLeft.Type, boundRight.Type);
             return boundLeft;
         }
 
@@ -49,7 +46,7 @@ internal sealed class Binder
 
         if (boundOperator == null)
         {
-            _diagnostics.Add($"Unary operator '{syntax.OperatorToken.Text}' is not defined for type {boundOperand.Type}.");
+            Diagnostics.ReportUndefinedUnaryOperator(syntax.OperatorToken.Span, syntax.OperatorToken.Text, boundOperand.Type);
             return boundOperand;
         }
 

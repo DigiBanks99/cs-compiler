@@ -26,7 +26,7 @@ insert_final_newline = false
 
 # Organize usings
 dotnet_separate_import_directive_groups = true
-dotnet_sort_system_directives_first = true
+dotnet_sort_system_directives_first = false
 file_header_template = unset
 
 # this. and Me. preferences
@@ -46,7 +46,7 @@ dotnet_style_parentheses_in_other_operators = never_if_unnecessary:silent
 dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:silent
 
 # Modifier preferences
-dotnet_style_require_accessibility_modifiers = for_non_interface_members:silent
+dotnet_style_require_accessibility_modifiers = all:error
 
 # Expression-level preferences
 dotnet_style_coalesce_expression = true:suggestion

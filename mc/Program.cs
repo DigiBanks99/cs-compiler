@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-
-using Minsk.CodeAnalysis;
-using Minsk.CodeAnalysis.Binding;
+﻿using Minsk.CodeAnalysis;
 using Minsk.CodeAnalysis.Syntax;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Minsk
 {
@@ -45,7 +43,7 @@ namespace Minsk
                 SyntaxTree syntaxTree = SyntaxTree.Parse(line);
                 Compilation compilation = new(syntaxTree);
                 EvaluationResult result = compilation.Evaluate();
-                IReadOnlyList<string> diagnostics = result.Diagnostics;
+                IReadOnlyList<Diagnostic> diagnostics = result.Diagnostics;
 
                 if (showTree)
                 {
@@ -60,12 +58,29 @@ namespace Minsk
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     foreach (var diagnostic in diagnostics)
                     {
+                        Console.WriteLine();
+
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
                         Console.Error.WriteLine(diagnostic);
+                        Console.ResetColor();
+
+                        var prefix = line[..diagnostic.Span.Start];
+                        var error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
+                        var suffix = line[diagnostic.Span.End..];
+
+                        Console.Error.Write($"   {prefix}");
+
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Error.Write(error);
+                        Console.ResetColor();
+
+                        Console.Error.Write(suffix);
+
+                        Console.WriteLine();
                     }
-                    Console.ResetColor();
+                    Console.WriteLine();
                 }
             }
         }

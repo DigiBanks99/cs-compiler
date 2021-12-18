@@ -1,12 +1,9 @@
-using System.Collections.Immutable;
-
 namespace Minsk.CodeAnalysis.Syntax;
 
 internal sealed class Parser
 {
     private readonly SyntaxToken[] _tokens;
     private int _position;
-    private readonly List<string> _diagnostics = new();
 
     public Parser(string text)
     {
@@ -27,16 +24,10 @@ internal sealed class Parser
         while (token.Kind != SyntaxKind.EndOfFileToken);
 
         _tokens = tokens.ToArray();
-        _diagnostics.AddRange(lexer.Diagnostics);
+        Diagnostics.AddRange(lexer.Diagnostics);
     }
 
-    public IEnumerable<string> Diagnostics
-    {
-        get
-        {
-            return _diagnostics.ToImmutableArray();
-        }
-    }
+    public DiagnosticBag Diagnostics { get; } = new();
 
     private SyntaxToken Current => Peek(0);
 
@@ -107,7 +98,7 @@ internal sealed class Parser
             return NextToken();
         }
 
-        _diagnostics.Add($"ERROR: Unexpected token <{Current.Kind}>, expected <{kind}>");
+        Diagnostics.ReportUnexpectedToken(Current.Span, Current.Kind, kind);
         return new SyntaxToken(kind, Current.Position, null, null);
     }
 
