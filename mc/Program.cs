@@ -19,6 +19,7 @@ namespace Minsk
         private static void Main()
         {
             bool showTree = false;
+            Dictionary<string, object> variables = new();
             while (true)
             {
                 Console.Write("> ");
@@ -42,7 +43,7 @@ namespace Minsk
 
                 SyntaxTree syntaxTree = SyntaxTree.Parse(line);
                 Compilation compilation = new(syntaxTree);
-                EvaluationResult result = compilation.Evaluate();
+                EvaluationResult result = compilation.Evaluate(variables);
                 IReadOnlyList<Diagnostic> diagnostics = result.Diagnostics;
 
                 if (showTree)

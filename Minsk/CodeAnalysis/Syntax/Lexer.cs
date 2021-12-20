@@ -109,7 +109,8 @@ internal sealed class Lexer
                     _position += 2;
                     return new SyntaxToken(SyntaxKind.EqualsEqualsToken, start, "==", null);
                 }
-                break;
+                _position++;
+                return new SyntaxToken(SyntaxKind.EqualsToken, start, "=", null);
         }
 
         Diagnostics.ReportBadCharacter(_position, Current);
