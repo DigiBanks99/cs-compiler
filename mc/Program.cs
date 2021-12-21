@@ -19,7 +19,7 @@ namespace Minsk
         private static void Main()
         {
             bool showTree = false;
-            Dictionary<string, object> variables = new();
+            Dictionary<VariableSymbol, object> variables = new();
             while (true)
             {
                 Console.Write("> ");
