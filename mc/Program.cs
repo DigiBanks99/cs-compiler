@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using Minsk.CodeAnalysis;
-using Minsk.CodeAnalysis.Binding;
+﻿using Minsk.CodeAnalysis;
 using Minsk.CodeAnalysis.Syntax;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Minsk
 {
@@ -20,6 +19,7 @@ namespace Minsk
         private static void Main()
         {
             bool showTree = false;
+            Dictionary<VariableSymbol, object> variables = new();
             while (true)
             {
                 Console.Write("> ");
@@ -41,10 +41,10 @@ namespace Minsk
                     continue;
                 }
 
-                var syntaxTree = SyntaxTree.Parse(line);
-                var binder = new Binder();
-                var boundExpression = binder.BindExpression(syntaxTree.Root);
-                IReadOnlyList<string> diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToImmutableArray();
+                SyntaxTree syntaxTree = SyntaxTree.Parse(line);
+                Compilation compilation = new(syntaxTree);
+                EvaluationResult result = compilation.Evaluate(variables);
+                IReadOnlyList<Diagnostic> diagnostics = result.Diagnostics;
 
                 if (showTree)
                 {
@@ -55,18 +55,33 @@ namespace Minsk
 
                 if (!diagnostics.Any())
                 {
-                    var e = new Evaluator(boundExpression);
-                    var result = e.Evaluate();
-                    Console.WriteLine(result);
+                    Console.WriteLine(result.Value);
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     foreach (var diagnostic in diagnostics)
                     {
+                        Console.WriteLine();
+
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
                         Console.Error.WriteLine(diagnostic);
+                        Console.ResetColor();
+
+                        var prefix = line[..diagnostic.Span.Start];
+                        var error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
+                        var suffix = line[diagnostic.Span.End..];
+
+                        Console.Error.Write($"   {prefix}");
+
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.Error.Write(error);
+                        Console.ResetColor();
+
+                        Console.Error.Write(suffix);
+
+                        Console.WriteLine();
                     }
-                    Console.ResetColor();
+                    Console.WriteLine();
                 }
             }
         }
