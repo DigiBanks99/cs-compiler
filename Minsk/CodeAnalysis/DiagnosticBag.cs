@@ -54,6 +54,12 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic>
         Report(span, message);
     }
 
+    public void ReportUnknownVariable(TextSpan span, string? name)
+    {
+        var message = $"Reference of an unknown variable '{name}'.";
+        Report(span, message);
+    }
+
     private void Report(TextSpan span, string message)
     {
         var diagnostic = new Diagnostic(span, message);

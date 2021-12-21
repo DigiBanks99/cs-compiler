@@ -30,7 +30,25 @@ internal sealed class Binder
     private BoundExpression BindAssignmentExpression(AssignmentExpressionSyntax syntax)
     {
         var name = syntax.IdentifierToken.Text;
+        if (name == null)
+        {
+            Diagnostics.ReportUnknownVariable(syntax.IdentifierToken.Span, name);
+            throw new Exception($"Unknown variable name '{name}'");
+        }
         var boundExpression = BindExpression(syntax.Expression);
+
+        var defaultValue = boundExpression.Type == typeof(int)
+                         ? (object)0
+                         : boundExpression.Type == typeof(bool)
+                         ? (object)false
+                         : null;
+
+        if (defaultValue == null)
+        {
+            throw new Exception($"Unsupported variable type: {boundExpression.Type}");
+        }
+
+        _variables[name] = defaultValue;
         return new BoundAssignmentExpression(name, boundExpression);
     }
 
@@ -64,7 +82,7 @@ internal sealed class Binder
             return new BoundLiteralExpression(0);
         }
 
-        var type = typeof(int);
+        var type = value.GetType();
         return new BoundVariableExpression(name, type);
     }
 
