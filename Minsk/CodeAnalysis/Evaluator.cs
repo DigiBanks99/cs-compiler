@@ -5,20 +5,20 @@ namespace Minsk.CodeAnalysis;
 internal sealed class Evaluator
 {
     private readonly BoundExpression _root;
-    private readonly Dictionary<VariableSymbol, object> _variables;
+    private readonly Dictionary<VariableSymbol, object?> _variables;
 
-    public Evaluator(BoundExpression root, Dictionary<VariableSymbol, object> variables)
+    public Evaluator(BoundExpression root, Dictionary<VariableSymbol, object?> variables)
     {
         _root = root;
         _variables = variables;
     }
 
-    public object Evaluate()
+    public object? Evaluate()
     {
         return EvaluateExpression(_root);
     }
 
-    private object EvaluateExpression(BoundExpression node)
+    private object? EvaluateExpression(BoundExpression node)
     {
         if (node is BoundLiteralExpression n)
         {
@@ -40,7 +40,10 @@ internal sealed class Evaluator
         if (node is BoundUnaryExpression u)
         {
             var operand = EvaluateExpression(u.Operand);
-            return u.Op.Kind switch
+
+            return operand == null
+            ? null
+            : u.Op.Kind switch
             {
                 BoundUnaryOperatorKind.Identity => (int)operand,
                 BoundUnaryOperatorKind.Negation => -(int)operand,
@@ -53,8 +56,9 @@ internal sealed class Evaluator
         {
             var left = EvaluateExpression(b.Left);
             var right = EvaluateExpression(b.Right);
-
-            return b.Op.Kind switch
+            return left == null || right == null
+            ? null
+            : b.Op.Kind switch
             {
                 BoundBinaryOperatorKind.Addition => (int)left + (int)right,
                 BoundBinaryOperatorKind.Subtraction => (int)left - (int)right,

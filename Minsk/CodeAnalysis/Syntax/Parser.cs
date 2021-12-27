@@ -151,10 +151,8 @@ internal sealed class Parser
     private SyntaxToken Peek(int offset)
     {
         var index = _position + offset;
-        if (index >= _tokens.Length)
-        {
-            return _tokens[^1];
-        }
-        return _tokens[index];
+        return index >= _tokens.Length
+             ? _tokens[^1]
+             : _tokens[index];
     }
 }

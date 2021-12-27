@@ -125,10 +125,8 @@ internal sealed class Lexer
     private char Peek(int offset)
     {
         var index = _position + offset;
-        if (index >= _text.Length)
-        {
-            return '\0';
-        }
-        return _text[index];
+        return index >= _text.Length
+             ? '\0'
+             : _text[index];
     }
 }
