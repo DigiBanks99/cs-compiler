@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mc", "mc\mc.csproj", "{900F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minsk", "Minsk\Minsk.csproj", "{67AE4A56-C700-4705-98AD-57135C51D96A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minsk.Tests", "Minsk.Tests\Minsk.Tests.csproj", "{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{67AE4A56-C700-4705-98AD-57135C51D96A}.Release|x64.Build.0 = Release|Any CPU
 		{67AE4A56-C700-4705-98AD-57135C51D96A}.Release|x86.ActiveCfg = Release|Any CPU
 		{67AE4A56-C700-4705-98AD-57135C51D96A}.Release|x86.Build.0 = Release|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Debug|x64.Build.0 = Debug|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Debug|x86.Build.0 = Debug|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Release|x64.ActiveCfg = Release|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Release|x64.Build.0 = Release|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Release|x86.ActiveCfg = Release|Any CPU
+		{FCDC6A8F-737B-43A3-81E3-B577CF7A2CAE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
