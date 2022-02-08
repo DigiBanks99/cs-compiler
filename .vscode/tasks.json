@@ -43,8 +43,10 @@
       "command": "dotnet",
       "type": "process",
       "args": [
+        "watch",
         "test",
-        "${workspaceFolder}/minsk.sln",
+        "--project",
+        "${workspaceFolder}/Minsk.Tests/Minsk.Tests.csproj",
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"
