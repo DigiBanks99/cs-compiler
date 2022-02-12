@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -58,65 +59,52 @@ public class LexerTests
         Assert.Equal(t2Text, tokens[2].Text);
     }
 
-    public static IEnumerable<object[]> GetTokensData()
+    public static IEnumerable<object?[]> GetTokensData()
     {
         foreach (var token in GetTokens().Concat(GetSeparators()))
         {
-            yield return new object[] { token.kind, token.text };
+            yield return new object?[] { token.kind, token.text };
         }
     }
 
-    public static IEnumerable<object[]> GetTokenPairsData()
+    public static IEnumerable<object?[]> GetTokenPairsData()
     {
         foreach (var token in GetTokenPairs())
         {
-            yield return new object[] { token.t1Kind, token.t1Text, token.t2Kind, token.t2Text };
+            yield return new object?[] { token.t1Kind, token.t1Text, token.t2Kind, token.t2Text };
         }
     }
 
-    public static IEnumerable<object[]> GetTokenPairsWithSeparatorData()
+    public static IEnumerable<object?[]> GetTokenPairsWithSeparatorData()
     {
         foreach (var token in GetTokenPairsWithSeparator())
         {
-            yield return new object[] { token.t1Kind, token.t1Text, token.separatorKind, token.separatorText, token.t2Kind, token.t2Text };
+            yield return new object?[] { token.t1Kind, token.t1Text, token.separatorKind, token.separatorText, token.t2Kind, token.t2Text };
         }
     }
 
-    private static IEnumerable<(SyntaxKind kind, string text)> GetTokens()
+    private static IEnumerable<(SyntaxKind kind, string? text)> GetTokens()
     {
-        return new[]
+        var fixedTokens = Enum.GetValues(typeof(SyntaxKind))
+                              .Cast<SyntaxKind>()
+                              .Select(k => (kind: k, text: SyntaxFacts.GetText(k)))
+                              .Where(v => v.text != null)
+                              .DefaultIfEmpty();
+
+        var dynamicTokens = new (SyntaxKind kind, string? text)[]
         {
-            (SyntaxKind.PlusToken, "+"),
-            (SyntaxKind.MinusToken, "-"),
-            (SyntaxKind.StarToken, "*"),
-            (SyntaxKind.SlashToken, "/"),
-
-            (SyntaxKind.BangToken, "!"),
-            (SyntaxKind.EqualsToken, "="),
-
-            (SyntaxKind.AmpersandAmpersandToken, "&&"),
-            (SyntaxKind.PipePipeToken, "||"),
-
-            (SyntaxKind.EqualsEqualsToken, "=="),
-            (SyntaxKind.BangEqualsToken, "!="),
-
-            (SyntaxKind.OpenParenthesisToken, "("),
-            (SyntaxKind.CloseParenthesisToken, ")"),
-
-            (SyntaxKind.IdentifierToken, "a"),
-            (SyntaxKind.IdentifierToken, "abc"),
-
-            (SyntaxKind.FalseKeyword, "false"),
-            (SyntaxKind.TrueKeyword, "true"),
-
             (SyntaxKind.NumberToken, "1"),
-            (SyntaxKind.NumberToken, "123")
+            (SyntaxKind.NumberToken, "123"),
+            (SyntaxKind.IdentifierToken, "a"),
+            (SyntaxKind.IdentifierToken, "abc")
         };
+
+        return fixedTokens.Concat(dynamicTokens);
     }
 
-    private static IEnumerable<(SyntaxKind kind, string text)> GetSeparators()
+    private static IEnumerable<(SyntaxKind kind, string? text)> GetSeparators()
     {
-        return new[]
+        return new (SyntaxKind kind, string? text)[]
         {
             (SyntaxKind.WhitespaceToken, " "),
             (SyntaxKind.WhitespaceToken, "   "),
@@ -127,7 +115,7 @@ public class LexerTests
         };
     }
 
-    private static IEnumerable<(SyntaxKind t1Kind, string t1Text, SyntaxKind t2Kind, string t2Text)> GetTokenPairs()
+    private static IEnumerable<(SyntaxKind t1Kind, string? t1Text, SyntaxKind t2Kind, string? t2Text)> GetTokenPairs()
     {
         foreach (var t1 in GetTokens())
         {
@@ -141,7 +129,7 @@ public class LexerTests
         }
     }
 
-    private static IEnumerable<(SyntaxKind t1Kind, string t1Text, SyntaxKind separatorKind, string separatorText, SyntaxKind t2Kind, string t2Text)> GetTokenPairsWithSeparator()
+    private static IEnumerable<(SyntaxKind t1Kind, string? t1Text, SyntaxKind separatorKind, string? separatorText, SyntaxKind t2Kind, string? t2Text)> GetTokenPairsWithSeparator()
     {
         foreach (var t1 in GetTokens())
         {
