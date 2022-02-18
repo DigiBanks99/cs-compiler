@@ -27,6 +27,6 @@ public class Compilation
         var evaluator = new Evaluator(boundExpression, variables);
         var value = evaluator.Evaluate();
 
-        return new EvaluationResult(Array.Empty<Diagnostic>(), value);
+        return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
     }
 }
