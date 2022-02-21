@@ -21,7 +21,7 @@ public sealed class SourceText
     public int GetLineIndex(int position)
     {
         int lower = 0;
-        int upper = _text.Length - 1;
+        int upper = Lines.Length - 1;
 
         while (lower <= upper)
         {
