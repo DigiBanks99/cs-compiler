@@ -7,6 +7,7 @@ namespace Minsk.CodeAnalysis.Syntax;
 internal sealed class Parser
 {
     private readonly ImmutableArray<SyntaxToken> _tokens;
+    readonly SourceText _text;
     private int _position;
 
     public Parser(SourceText text)
@@ -27,6 +28,7 @@ internal sealed class Parser
         }
         while (token.Kind != SyntaxKind.EndOfFileToken);
 
+        _text = text;
         _tokens = tokens.ToImmutableArray();
         Diagnostics.AddRange(lexer.Diagnostics);
     }
@@ -39,7 +41,7 @@ internal sealed class Parser
     {
         var expression = ParseExpression();
         var eofToken = MatchToken(SyntaxKind.EndOfFileToken);
-        return new SyntaxTree(Diagnostics.ToImmutableArray(), expression, eofToken);
+        return new SyntaxTree(_text, Diagnostics.ToImmutableArray(), expression, eofToken);
     }
 
     private ExpressionSyntax ParseExpression()
