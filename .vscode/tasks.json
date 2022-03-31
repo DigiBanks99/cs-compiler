@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/mc/mc.csproj",
+        "${workspaceFolder}/src/mc/mc.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -19,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/mc/mc.csproj",
+        "${workspaceFolder}/src/mc/mc.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -32,7 +32,7 @@
       "args": [
         "watch",
         "run",
-        "${workspaceFolder}/mc/mc.csproj",
+        "${workspaceFolder}/src/mc/mc.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -46,7 +46,7 @@
         "watch",
         "test",
         "--project",
-        "${workspaceFolder}/Minsk.Tests/Minsk.Tests.csproj",
+        "${workspaceFolder}/src/Minsk.Tests/Minsk.Tests.csproj",
         "/consoleloggerparameters:NoSummary"
       ],
       "problemMatcher": "$msCompile"
