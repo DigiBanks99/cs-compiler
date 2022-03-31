@@ -34,7 +34,7 @@ public sealed class SourceText
             }
             else if (start > position)
             {
-                upper = index + 1;
+                upper = index - 1;
             }
             else
             {
@@ -77,7 +77,7 @@ public sealed class SourceText
             }
         }
 
-        if (position > lineStart)
+        if (position >= lineStart)
         {
             AddLine(result, sourceText, position, lineStart, 0);
         }
