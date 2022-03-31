@@ -26,14 +26,16 @@ namespace Minsk
 
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 if (textBuilder.Length == 0)
                 {
-                    Console.Write("> ");
+                    Console.Write("› ");
                 }
                 else
                 {
-                    Console.Write("| ");
+                    Console.Write("· ");
                 }
+                Console.ResetColor();
 
                 var input = Console.ReadLine();
                 var isBlank = string.IsNullOrEmpty(input);
@@ -79,7 +81,9 @@ namespace Minsk
 
                 if (!diagnostics.Any())
                 {
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine(result.Value);
+                    Console.ResetColor();
                 }
                 else
                 {
