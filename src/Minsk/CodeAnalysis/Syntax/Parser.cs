@@ -37,11 +37,11 @@ internal sealed class Parser
 
     private SyntaxToken Current => Peek(0);
 
-    public SyntaxTree Parse()
+    public CompilationUnitSyntax ParseCompilationUnit()
     {
         var expression = ParseExpression();
         var eofToken = MatchToken(SyntaxKind.EndOfFileToken);
-        return new SyntaxTree(_text, Diagnostics.ToImmutableArray(), expression, eofToken);
+        return new CompilationUnitSyntax(expression, eofToken);
     }
 
     private ExpressionSyntax ParseExpression()
