@@ -25,6 +25,12 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic>
         Report(span, message);
     }
 
+    public void ReportCannotConvert(TextSpan span, Type fromType, Type toType)
+    {
+        var message = $"Cannot convert '{fromType}' to '{toType}'.";
+        Report(span, message);
+    }
+
     public void ReportInvalidNumber(TextSpan span, string text, Type type)
     {
         var message = $"The number {text} isn't a valid {type}.";

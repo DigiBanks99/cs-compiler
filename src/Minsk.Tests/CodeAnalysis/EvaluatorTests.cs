@@ -35,8 +35,8 @@ public class EvaluatorTests
     [InlineData("false && true", false)]
     [InlineData("false || true", true)]
     [InlineData("false || false", false)]
-    [InlineData("a", 42)]
-    [InlineData("b", -4)]
+    [InlineData("a = 42", 42)]
+    [InlineData("b = -4", -4)]
     [InlineData("(c = 10) * c", 100)]
     public void Compilation_Evaluate_ShouldReturnTheCorrectValue(string text, object expectedValue)
     {

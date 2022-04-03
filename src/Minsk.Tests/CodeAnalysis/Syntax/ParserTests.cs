@@ -19,7 +19,7 @@ public class ParserTests
         var text = $"a {op1Text} b {op2Text} c";
 
         // parse
-        var expression = SyntaxTree.Parse(text).Root;
+        var expression = ParseExpression(text);
 
         using var e = new AssertingEnumerator(expression);
 
@@ -79,7 +79,7 @@ public class ParserTests
         var text = $"{unaryText} a {binaryText} b";
 
         // parse
-        var expression = SyntaxTree.Parse(text).Root;
+        var expression = ParseExpression(text);
 
         using var e = new AssertingEnumerator(expression);
 
@@ -120,6 +120,13 @@ public class ParserTests
             e.AssertNode(SyntaxKind.NameExpression); // b
             e.AssertToken(SyntaxKind.IdentifierToken, "b"); // b
         }
+    }
+
+    private static ExpressionSyntax ParseExpression(string text)
+    {
+        SyntaxTree syntaxTree = SyntaxTree.Parse(text);
+        CompilationUnitSyntax root = syntaxTree.Root;
+        return root.Expression;
     }
 
     public static IEnumerable<object[]> GetBinaryOperatorPairData()
