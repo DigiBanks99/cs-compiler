@@ -1,14 +1,34 @@
 using Minsk.CodeAnalysis.Syntax;
 
+using System.Collections.Immutable;
+
 namespace Minsk.CodeAnalysis.Binding;
 
 internal sealed class Binder
 {
-    private readonly Dictionary<VariableSymbol, object?> _variables;
+    private readonly BoundScope _scope;
 
-    public Binder(Dictionary<VariableSymbol, object?> variables)
+    public Binder(BoundScope? parent)
     {
-        _variables = variables;
+        _scope = new BoundScope(parent);
+    }
+
+    public DiagnosticBag Diagnostics { get; } = new();
+
+    public static BoundGlobalScope BindGlobalScope(BoundGlobalScope? previous, CompilationUnitSyntax syntax)
+    {
+        BoundScope? parentScope = CreateParentScope(previous);
+        Binder binder = new(parentScope);
+        BoundExpression expression = binder.BindExpression(syntax.Expression);
+        ImmutableArray<VariableSymbol> variables = binder._scope.GetDeclaredVariables();
+        ImmutableArray<Diagnostic> diagnostics = binder.Diagnostics.ToImmutableArray();
+
+        if (previous?.Diagnostics.Any() ?? false)
+        {
+            diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
+        }
+
+        return new BoundGlobalScope(previous, diagnostics, variables, expression);
     }
 
     public BoundExpression BindExpression(ExpressionSyntax syntax)
@@ -25,7 +45,30 @@ internal sealed class Binder
         };
     }
 
-    public DiagnosticBag Diagnostics { get; } = new();
+    private static BoundScope? CreateParentScope(BoundGlobalScope? previous)
+    {
+        Stack<BoundGlobalScope> stack = new();
+        while (previous != null)
+        {
+            stack.Push(previous);
+            previous = previous.Previous;
+        }
+
+        BoundScope? parentScope = null;
+        while (stack.Count > 0)
+        {
+            BoundGlobalScope globalScope = stack.Pop();
+            BoundScope scope = new(parentScope);
+            for (int i = 0; i < globalScope.Variables.Length; i++)
+            {
+                scope.TryDeclare(globalScope.Variables[i]);
+            }
+
+            parentScope = scope;
+        }
+
+        return parentScope;
+    }
 
     private BoundExpression BindAssignmentExpression(AssignmentExpressionSyntax syntax)
     {
@@ -37,14 +80,24 @@ internal sealed class Binder
         }
         var boundExpression = BindExpression(syntax.Expression);
 
-        VariableSymbol? existingVariable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-        if (existingVariable != null)
+        if (!_scope.TryLookup(name, out VariableSymbol? variable))
         {
-            _variables.Remove(existingVariable);
+            variable = new VariableSymbol(name, boundExpression.Type);
+            _scope.TryDeclare(variable);
         }
-        var variable = new VariableSymbol(name, boundExpression.Type);
 
-        _variables[variable] = null;
+        if (variable == null)
+        {
+            variable = new VariableSymbol(name, boundExpression.Type);
+            _scope.TryDeclare(variable);
+        }
+
+        if (boundExpression.Type != variable.Type)
+        {
+            Diagnostics.ReportCannotConvert(syntax.Expression.Span, boundExpression.Type, variable.Type);
+            return boundExpression;
+        }
+
         return new BoundAssignmentExpression(variable, boundExpression);
     }
 
@@ -72,14 +125,13 @@ internal sealed class Binder
     private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
     {
         var name = syntax.IdentifierToken.Text ?? "Empty String";
-        VariableSymbol? variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-        if (variable is null)
+        if (_scope.TryLookup(name, out VariableSymbol? variable))
         {
-            Diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
-            return new BoundLiteralExpression(0);
+            return new BoundVariableExpression(variable!);
         }
 
-        return new BoundVariableExpression(variable);
+        Diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+        return new BoundLiteralExpression(0);
     }
 
     private BoundExpression BindParenthesizedExpression(ParenthesizedExpressionSyntax syntax)
