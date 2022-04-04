@@ -43,11 +43,7 @@ public class EvaluatorTests
         // Arrange
         var syntaxTree = SyntaxTree.Parse(text);
         var compilation = new Compilation(syntaxTree);
-        var variables = new Dictionary<VariableSymbol, object?>
-        {
-            { new VariableSymbol("a", typeof(int)), 42 },
-            { new VariableSymbol("b", typeof(int)), -4 }
-        };
+        var variables = new Dictionary<VariableSymbol, object?> { };
 
         // Act
         var result = compilation.Evaluate(variables);

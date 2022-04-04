@@ -1,7 +1,5 @@
 using Minsk.CodeAnalysis.Syntax;
 
-using System.Collections.Immutable;
-
 namespace Minsk.CodeAnalysis.Binding;
 
 internal sealed class Binder
@@ -19,7 +17,7 @@ internal sealed class Binder
     {
         BoundScope? parentScope = CreateParentScope(previous);
         Binder binder = new(parentScope);
-        BoundExpression expression = binder.BindExpression(syntax.Expression);
+        BoundStatement statement = binder.BindStatement(syntax.Statement);
         ImmutableArray<VariableSymbol> variables = binder._scope.GetDeclaredVariables();
         ImmutableArray<Diagnostic> diagnostics = binder.Diagnostics.ToImmutableArray();
 
@@ -28,7 +26,36 @@ internal sealed class Binder
             diagnostics = diagnostics.InsertRange(0, previous.Diagnostics);
         }
 
-        return new BoundGlobalScope(previous, diagnostics, variables, expression);
+        return new BoundGlobalScope(previous, diagnostics, variables, statement);
+    }
+
+    private BoundStatement BindStatement(StatementSyntax syntax)
+    {
+        return syntax.Kind switch
+        {
+            SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
+            SyntaxKind.ExpressionStatement => BindExpressionsStatement((ExpressionStatementSyntax)syntax),
+            _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
+        };
+    }
+
+    private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
+    {
+        var statements = ImmutableArray.CreateBuilder<BoundStatement>();
+
+        foreach (StatementSyntax statementSyntax in syntax.Statements)
+        {
+            BoundStatement statement = BindStatement(statementSyntax);
+            statements.Add(statement);
+        }
+
+        return new BoundBlockStatement(statements.ToImmutable());
+    }
+
+    private BoundStatement BindExpressionsStatement(ExpressionStatementSyntax syntax)
+    {
+        BoundExpression expression = BindExpression(syntax.Expression);
+        return new BoundExpressionStatement(expression);
     }
 
     public BoundExpression BindExpression(ExpressionSyntax syntax)

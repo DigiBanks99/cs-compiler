@@ -2,20 +2,20 @@ namespace Minsk.CodeAnalysis.Syntax;
 
 public sealed class CompilationUnitSyntax : SyntaxNode
 {
-    public CompilationUnitSyntax(ExpressionSyntax expression, SyntaxToken eofToken)
+    public CompilationUnitSyntax(StatementSyntax statement, SyntaxToken eofToken)
     {
-        Expression = expression;
+        Statement = statement;
         EofToken = eofToken;
     }
 
-    public ExpressionSyntax Expression { get; }
+    public StatementSyntax Statement { get; }
     public SyntaxToken EofToken { get; }
 
     public override SyntaxKind Kind => SyntaxKind.CompilationUnit;
 
     public override IEnumerable<SyntaxNode> GetChildren()
     {
-        yield return Expression;
+        yield return Statement;
         yield return EofToken;
     }
 }

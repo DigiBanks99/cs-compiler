@@ -126,7 +126,8 @@ public class ParserTests
     {
         SyntaxTree syntaxTree = SyntaxTree.Parse(text);
         CompilationUnitSyntax root = syntaxTree.Root;
-        return root.Expression;
+        StatementSyntax statement = root.Statement;
+        return Assert.IsType<ExpressionStatementSyntax>(statement).Expression;
     }
 
     public static IEnumerable<object[]> GetBinaryOperatorPairData()

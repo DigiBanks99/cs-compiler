@@ -1,7 +1,5 @@
 using Minsk.CodeAnalysis.Text;
 
-using System.Collections.Immutable;
-
 namespace Minsk.CodeAnalysis.Syntax;
 
 internal sealed class Parser
@@ -39,9 +37,39 @@ internal sealed class Parser
 
     public CompilationUnitSyntax ParseCompilationUnit()
     {
-        var expression = ParseExpression();
-        var eofToken = MatchToken(SyntaxKind.EndOfFileToken);
-        return new CompilationUnitSyntax(expression, eofToken);
+        StatementSyntax statement = ParseStatement();
+        SyntaxToken eofToken = MatchToken(SyntaxKind.EndOfFileToken);
+        return new CompilationUnitSyntax(statement, eofToken);
+    }
+
+    private StatementSyntax ParseStatement()
+    {
+        return Current.Kind == SyntaxKind.OpenBraceToken
+        ? ParseBlockStatement()
+        : ParseExpressionStatement();
+    }
+
+    private BlockStatementSyntax ParseBlockStatement()
+    {
+        var statements = ImmutableArray.CreateBuilder<StatementSyntax>();
+
+        SyntaxToken openBraceToken = MatchToken(SyntaxKind.OpenBraceToken);
+
+        while (Current.Kind != SyntaxKind.EndOfFileToken
+            && Current.Kind != SyntaxKind.CloseBraceToken)
+        {
+            StatementSyntax statement = ParseStatement();
+            statements.Add(statement);
+        }
+
+        SyntaxToken closeBraceToken = MatchToken(SyntaxKind.CloseBraceToken);
+        return new BlockStatementSyntax(openBraceToken, statements.ToImmutable(), closeBraceToken);
+    }
+
+    private ExpressionStatementSyntax ParseExpressionStatement()
+    {
+        ExpressionSyntax expression = ParseExpression();
+        return new ExpressionStatementSyntax(expression);
     }
 
     private ExpressionSyntax ParseExpression()

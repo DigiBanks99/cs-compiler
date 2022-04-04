@@ -1,8 +1,6 @@
 using Minsk.CodeAnalysis.Binding;
 using Minsk.CodeAnalysis.Syntax;
 
-using System.Collections.Immutable;
-
 namespace Minsk.CodeAnalysis;
 
 public class Compilation
@@ -47,7 +45,7 @@ public class Compilation
             return new EvaluationResult(diagnostics, null);
         }
 
-        var evaluator = new Evaluator(GlobalScope.Expression, variables);
+        var evaluator = new Evaluator(GlobalScope.Statement, variables);
         var value = evaluator.Evaluate();
 
         return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
