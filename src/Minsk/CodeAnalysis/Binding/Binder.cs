@@ -34,12 +34,13 @@ internal sealed class Binder
         return syntax.Kind switch
         {
             SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
+            SyntaxKind.VariableDeclaration => BindVariableDeclarationStatement((VariableDeclarationStatementSyntax)syntax),
             SyntaxKind.ExpressionStatement => BindExpressionsStatement((ExpressionStatementSyntax)syntax),
             _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
         };
     }
 
-    private BoundStatement BindBlockStatement(BlockStatementSyntax syntax)
+    private BoundBlockStatement BindBlockStatement(BlockStatementSyntax syntax)
     {
         var statements = ImmutableArray.CreateBuilder<BoundStatement>();
 
@@ -56,7 +57,28 @@ internal sealed class Binder
         return new BoundBlockStatement(statements.ToImmutable());
     }
 
-    private BoundStatement BindExpressionsStatement(ExpressionStatementSyntax syntax)
+    private BoundVariableDeclarationStatement BindVariableDeclarationStatement(VariableDeclarationStatementSyntax syntax)
+    {
+        var name = syntax.Identifier.Text;
+        if (name == null)
+        {
+            Diagnostics.ReportUnnamedVariable(syntax.Span);
+            throw new Exception($"Unnamed variable: {syntax.Span}");
+        }
+
+        var isReadOnly = syntax.Keyword.Kind == SyntaxKind.LetKeyword;
+        BoundExpression initializer = BindExpression(syntax.Initializer);
+        VariableSymbol variable = new(name, isReadOnly, initializer.Type);
+
+        if (!_scope.TryDeclare(variable))
+        {
+            Diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
+        }
+
+        return new BoundVariableDeclarationStatement(variable, initializer);
+    }
+
+    private BoundExpressionStatement BindExpressionsStatement(ExpressionStatementSyntax syntax)
     {
         BoundExpression expression = BindExpression(syntax.Expression);
         return new BoundExpressionStatement(expression);
@@ -113,14 +135,19 @@ internal sealed class Binder
 
         if (!_scope.TryLookup(name, out VariableSymbol? variable))
         {
-            variable = new VariableSymbol(name, boundExpression.Type);
-            _scope.TryDeclare(variable);
+            Diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+            return boundExpression;
         }
 
         if (variable == null)
         {
-            variable = new VariableSymbol(name, boundExpression.Type);
-            _scope.TryDeclare(variable);
+            Diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+            return boundExpression;
+        }
+
+        if (variable.IsReadOnly)
+        {
+            Diagnostics.ReportAssignmentToReadonlyVariable(syntax.EqualsToken.Span, name);
         }
 
         if (boundExpression.Type != variable.Type)

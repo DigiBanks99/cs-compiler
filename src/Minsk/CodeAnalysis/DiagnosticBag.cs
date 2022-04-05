@@ -18,6 +18,12 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic>
         _diagnostics.AddRange(diagnostics._diagnostics);
     }
 
+    public void ReportAssignmentToReadonlyVariable(TextSpan span, string name)
+    {
+        var message = $"Variable '{name}' is readonly and cannot be assigned a new value.";
+        Report(span, message);
+    }
+
     public void ReportBadCharacter(int position, char character)
     {
         var message = $"Bad character input: '{character}'.";
@@ -64,6 +70,18 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic>
     public void ReportUnknownVariable(TextSpan span, string? name)
     {
         var message = $"Reference of an unknown variable '{name}'.";
+        Report(span, message);
+    }
+
+    public void ReportUnnamedVariable(TextSpan span)
+    {
+        var message = $"Variable must be named: '{span}'.";
+        Report(span, message);
+    }
+
+    public void ReportVariableAlreadyDeclared(TextSpan span, string name)
+    {
+        var message = $"Variable '{name}' is already declared.";
         Report(span, message);
     }
 
