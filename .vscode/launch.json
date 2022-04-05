@@ -19,7 +19,7 @@
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "watch",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/src/mc/bin/Debug/net6.0/mc.dll",
             "args": [],
