@@ -32,6 +32,7 @@
       "args": [
         "watch",
         "run",
+        "--project",
         "${workspaceFolder}/src/mc/mc.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
