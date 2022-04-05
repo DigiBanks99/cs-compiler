@@ -4,7 +4,7 @@ namespace Minsk.CodeAnalysis.Binding;
 
 internal sealed class Binder
 {
-    private readonly BoundScope _scope;
+    private BoundScope _scope;
 
     public Binder(BoundScope? parent)
     {
@@ -43,11 +43,15 @@ internal sealed class Binder
     {
         var statements = ImmutableArray.CreateBuilder<BoundStatement>();
 
+        _scope = new BoundScope(_scope);
+
         foreach (StatementSyntax statementSyntax in syntax.Statements)
         {
             BoundStatement statement = BindStatement(statementSyntax);
             statements.Add(statement);
         }
+
+        _scope = _scope.Parent ?? new BoundScope(_scope);
 
         return new BoundBlockStatement(statements.ToImmutable());
     }
