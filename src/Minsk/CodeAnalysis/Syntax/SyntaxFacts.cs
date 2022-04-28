@@ -30,7 +30,7 @@ public static class SyntaxFacts
         {
             "true" => SyntaxKind.TrueKeyword,
             "false" => SyntaxKind.FalseKeyword,
-            "let" => SyntaxKind.LetKeyword,
+            "const" => SyntaxKind.ConstKeyword,
             "var" => SyntaxKind.VarKeyword,
             _ => SyntaxKind.IdentifierToken,
         };
@@ -80,7 +80,7 @@ public static class SyntaxFacts
             SyntaxKind.CloseBraceToken => "}",
             SyntaxKind.FalseKeyword => "false",
             SyntaxKind.TrueKeyword => "true",
-            SyntaxKind.LetKeyword => "let",
+            SyntaxKind.ConstKeyword => "const",
             SyntaxKind.VarKeyword => "var",
             _ => null
         };

@@ -26,7 +26,7 @@ public enum SyntaxKind
     // Keywords
     FalseKeyword,
     TrueKeyword,
-    LetKeyword,
+    ConstKeyword,
     VarKeyword,
 
     // Nodes

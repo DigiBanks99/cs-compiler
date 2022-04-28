@@ -47,7 +47,7 @@ internal sealed class Parser
         return Current.Kind switch
         {
             SyntaxKind.OpenBraceToken => ParseBlockStatement(),
-            SyntaxKind.LetKeyword or SyntaxKind.VarKeyword => ParseVariableDeclarationStatement(),
+            SyntaxKind.ConstKeyword or SyntaxKind.VarKeyword => ParseVariableDeclarationStatement(),
             _ => ParseExpressionStatement(),
         };
     }
@@ -71,7 +71,7 @@ internal sealed class Parser
 
     private VariableDeclarationStatementSyntax ParseVariableDeclarationStatement()
     {
-        SyntaxKind expected = Current.Kind == SyntaxKind.LetKeyword ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword;
+        SyntaxKind expected = Current.Kind == SyntaxKind.ConstKeyword ? SyntaxKind.ConstKeyword : SyntaxKind.VarKeyword;
         SyntaxToken keyword = MatchToken(expected);
         SyntaxToken identifier = MatchToken(SyntaxKind.IdentifierToken);
         SyntaxToken equals = MatchToken(SyntaxKind.EqualsToken);

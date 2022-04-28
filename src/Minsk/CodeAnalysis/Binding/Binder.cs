@@ -66,7 +66,7 @@ internal sealed class Binder
             throw new Exception($"Unnamed variable: {syntax.Span}");
         }
 
-        var isReadOnly = syntax.Keyword.Kind == SyntaxKind.LetKeyword;
+        var isReadOnly = syntax.Keyword.Kind == SyntaxKind.ConstKeyword;
         BoundExpression initializer = BindExpression(syntax.Initializer);
         VariableSymbol variable = new(name, isReadOnly, initializer.Type);
 
