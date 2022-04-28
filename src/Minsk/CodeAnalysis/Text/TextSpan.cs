@@ -17,4 +17,9 @@ public struct TextSpan
         var length = end - start;
         return new TextSpan(start, length);
     }
+
+    public override string ToString()
+    {
+        return $"{Start}...{End}";
+    }
 }
