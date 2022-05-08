@@ -200,6 +200,26 @@ public class LexerTests
             return true;
         }
 
+        if (SyntaxKind.LessToken == t1Kind && SyntaxKind.EqualsToken == t2Kind)
+        {
+            return true;
+        }
+
+        if (SyntaxKind.LessToken == t1Kind && SyntaxKind.EqualsEqualsToken == t2Kind)
+        {
+            return true;
+        }
+
+        if (SyntaxKind.GreaterToken == t1Kind && SyntaxKind.EqualsToken == t2Kind)
+        {
+            return true;
+        }
+
+        if (SyntaxKind.GreaterToken == t1Kind && SyntaxKind.EqualsEqualsToken == t2Kind)
+        {
+            return true;
+        }
+
         // != = is okay
         if (SyntaxKind.BangToken == t1Kind && SyntaxKind.EqualsEqualsToken == t2Kind)
         {
