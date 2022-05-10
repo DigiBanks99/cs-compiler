@@ -1,13 +1,12 @@
-namespace Minsk.CodeAnalysis.Binding
-{
-    internal sealed class BoundExpressionStatement : BoundStatement
-    {
-        public BoundExpressionStatement(BoundExpression expression)
-        {
-            Expression = expression;
-        }
+namespace Minsk.CodeAnalysis.Binding;
 
-        public override BoundNodeKind Kind => BoundNodeKind.ExpressionStatement;
-        public BoundExpression Expression { get; }
+internal sealed class BoundExpressionStatement : BoundStatement
+{
+    public BoundExpressionStatement(BoundExpression expression)
+    {
+        Expression = expression;
     }
+
+    public override BoundNodeKind Kind => BoundNodeKind.ExpressionStatement;
+    public BoundExpression Expression { get; }
 }

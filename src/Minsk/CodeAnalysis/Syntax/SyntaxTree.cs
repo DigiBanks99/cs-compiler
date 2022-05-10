@@ -8,7 +8,7 @@ public sealed class SyntaxTree
 {
     private SyntaxTree(SourceText text)
     {
-        Parser parser = new Parser(text);
+        Parser parser = new(text);
         Root = parser.ParseCompilationUnit();
         Diagnostics = parser.Diagnostics.ToImmutableArray();
 

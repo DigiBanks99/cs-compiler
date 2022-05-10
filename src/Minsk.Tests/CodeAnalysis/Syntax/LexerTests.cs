@@ -80,9 +80,9 @@ public class LexerTests
 
     public static IEnumerable<object?[]> GetTokensData()
     {
-        foreach (var token in GetTokens().Concat(GetSeparators()))
+        foreach (var (kind, text) in GetTokens().Concat(GetSeparators()))
         {
-            yield return new object?[] { token.kind, token.text };
+            yield return new object?[] { kind, text };
         }
     }
 
