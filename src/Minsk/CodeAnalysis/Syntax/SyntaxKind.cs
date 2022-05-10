@@ -30,15 +30,19 @@ public enum SyntaxKind
     // Keywords
     FalseKeyword,
     TrueKeyword,
+    IfKeyword,
+    ElseKeyword,
     ConstKeyword,
     VarKeyword,
 
     // Nodes
     CompilationUnit,
+    ElseClause,
 
     // Statements
     BlockStatement,
     VariableDeclaration,
+    IfStatement,
     ExpressionStatement,
 
     // Expressions

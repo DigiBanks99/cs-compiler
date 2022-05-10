@@ -4,7 +4,7 @@ namespace Minsk.CodeAnalysis.Binding;
 
 internal sealed class BoundScope
 {
-    private readonly Dictionary<string, VariableSymbol> _variables = new Dictionary<string, VariableSymbol>();
+    private readonly Dictionary<string, VariableSymbol> _variables = new();
 
     public BoundScope(BoundScope? parent)
     {
@@ -26,17 +26,8 @@ internal sealed class BoundScope
 
     public bool TryLookup(string name, out VariableSymbol? variable)
     {
-        if (_variables.TryGetValue(name, out variable))
-        {
-            return true;
-        }
-
-        if (Parent == null)
-        {
-            return false;
-        }
-
-        return Parent.TryLookup(name, out variable);
+        return _variables.TryGetValue(name, out variable)
+            || Parent != null && Parent.TryLookup(name, out variable);
     }
 
     public ImmutableArray<VariableSymbol> GetDeclaredVariables()

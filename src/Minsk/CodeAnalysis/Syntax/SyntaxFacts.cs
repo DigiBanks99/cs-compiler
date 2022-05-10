@@ -35,6 +35,8 @@ public static class SyntaxFacts
         {
             "true" => SyntaxKind.TrueKeyword,
             "false" => SyntaxKind.FalseKeyword,
+            "if" => SyntaxKind.IfKeyword,
+            "else" => SyntaxKind.ElseKeyword,
             "const" => SyntaxKind.ConstKeyword,
             "var" => SyntaxKind.VarKeyword,
             _ => SyntaxKind.IdentifierToken,
@@ -89,6 +91,8 @@ public static class SyntaxFacts
             SyntaxKind.CloseBraceToken => "}",
             SyntaxKind.FalseKeyword => "false",
             SyntaxKind.TrueKeyword => "true",
+            SyntaxKind.IfKeyword => "if",
+            SyntaxKind.ElseKeyword => "else",
             SyntaxKind.ConstKeyword => "const",
             SyntaxKind.VarKeyword => "var",
             _ => null

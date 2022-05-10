@@ -1,6 +1,5 @@
-namespace Minsk.CodeAnalysis.Binding
+namespace Minsk.CodeAnalysis.Binding;
+
+internal abstract class BoundStatement : BoundNode
 {
-    internal abstract class BoundStatement : BoundNode
-    {
-    }
 }
