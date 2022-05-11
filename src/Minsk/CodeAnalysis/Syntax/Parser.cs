@@ -48,6 +48,7 @@ internal sealed class Parser
             SyntaxKind.ConstKeyword or SyntaxKind.VarKeyword => ParseVariableDeclarationStatement(),
             SyntaxKind.IfKeyword => ParseIfStatement(),
             SyntaxKind.WhileKeyword => ParseWhileStatement(),
+            SyntaxKind.ForKeyword => ParseForStatement(),
             _ => ParseExpressionStatement(),
         };
     }
@@ -97,6 +98,17 @@ internal sealed class Parser
         StatementSyntax body = ParseStatement();
 
         return new WhileStatementSyntax(whileKeyword, condition, body);
+    }
+
+    private ForStatementSyntax ParseForStatement()
+    {
+        SyntaxToken forKeyword = MatchToken(SyntaxKind.ForKeyword);
+        VariableDeclarationStatementSyntax initializer = ParseVariableDeclarationStatement();
+        ExpressionSyntax condition = ParseExpression();
+        StatementSyntax increment = ParseStatement();
+        StatementSyntax body = ParseStatement();
+
+        return new ForStatementSyntax(forKeyword, initializer, condition, increment, body);
     }
 
     private ElseClauseSyntax? ParseElseClause()

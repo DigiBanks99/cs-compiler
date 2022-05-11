@@ -37,6 +37,7 @@ internal sealed class Binder
             SyntaxKind.VariableDeclaration => BindVariableDeclarationStatement((VariableDeclarationStatementSyntax)syntax),
             SyntaxKind.IfStatement => BindIfStatement((IfStatementSyntax)syntax),
             SyntaxKind.WhileStatement => BindWhileStatement((WhileStatementSyntax)syntax),
+            SyntaxKind.ForStatement => BindForStatement((ForStatementSyntax)syntax),
             SyntaxKind.ExpressionStatement => BindExpressionsStatement((ExpressionStatementSyntax)syntax),
             _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
         };
@@ -95,6 +96,16 @@ internal sealed class Binder
         BoundStatement statement = BindStatement(syntax.Body);
 
         return new BoundWhileStatement(condition, statement);
+    }
+
+    private BoundForStatement BindForStatement(ForStatementSyntax syntax)
+    {
+        BoundVariableDeclarationStatement variableDeclaration = BindVariableDeclarationStatement(syntax.Initializer);
+        BoundExpression condition = BindExpression(syntax.Condition, typeof(bool));
+        BoundStatement increment = BindStatement(syntax.Increment);
+        BoundStatement body = BindStatement(syntax.Body);
+
+        return new BoundForStatement(variableDeclaration, condition, increment, body);
     }
 
     private BoundExpressionStatement BindExpressionsStatement(ExpressionStatementSyntax syntax)
