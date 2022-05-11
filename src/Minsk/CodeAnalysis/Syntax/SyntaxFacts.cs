@@ -39,6 +39,7 @@ public static class SyntaxFacts
             "else" => SyntaxKind.ElseKeyword,
             "const" => SyntaxKind.ConstKeyword,
             "var" => SyntaxKind.VarKeyword,
+            "while" => SyntaxKind.WhileKeyword,
             _ => SyntaxKind.IdentifierToken,
         };
     }
@@ -95,6 +96,7 @@ public static class SyntaxFacts
             SyntaxKind.ElseKeyword => "else",
             SyntaxKind.ConstKeyword => "const",
             SyntaxKind.VarKeyword => "var",
+            SyntaxKind.WhileKeyword => "while",
             _ => null
         };
     }

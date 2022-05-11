@@ -8,6 +8,7 @@ public sealed class ExpressionStatementSyntax : StatementSyntax
     }
 
     public override SyntaxKind Kind => SyntaxKind.ExpressionStatement;
+
     public ExpressionSyntax Expression { get; }
 
     public override IEnumerable<SyntaxNode> GetChildren()

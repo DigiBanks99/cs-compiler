@@ -36,6 +36,7 @@ internal sealed class Binder
             SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
             SyntaxKind.VariableDeclaration => BindVariableDeclarationStatement((VariableDeclarationStatementSyntax)syntax),
             SyntaxKind.IfStatement => BindIfStatement((IfStatementSyntax)syntax),
+            SyntaxKind.WhileStatement => BindWhileStatement((WhileStatementSyntax)syntax),
             SyntaxKind.ExpressionStatement => BindExpressionsStatement((ExpressionStatementSyntax)syntax),
             _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
         };
@@ -86,6 +87,14 @@ internal sealed class Binder
         BoundStatement? elseStatement = syntax.ElseClause != null ? BindStatement(syntax.ElseClause.ElseStatement) : null;
 
         return new BoundIfStatement(condition, thenStatement, elseStatement);
+    }
+
+    private BoundWhileStatement BindWhileStatement(WhileStatementSyntax syntax)
+    {
+        BoundExpression condition = BindExpression(syntax.Condition, typeof(bool));
+        BoundStatement statement = BindStatement(syntax.Body);
+
+        return new BoundWhileStatement(condition, statement);
     }
 
     private BoundExpressionStatement BindExpressionsStatement(ExpressionStatementSyntax syntax)

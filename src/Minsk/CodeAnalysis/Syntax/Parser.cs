@@ -5,7 +5,6 @@ namespace Minsk.CodeAnalysis.Syntax;
 internal sealed class Parser
 {
     private readonly ImmutableArray<SyntaxToken> _tokens;
-    readonly SourceText _text;
     private int _position;
 
     public Parser(SourceText text)
@@ -26,7 +25,6 @@ internal sealed class Parser
         }
         while (token.Kind != SyntaxKind.EndOfFileToken);
 
-        _text = text;
         _tokens = tokens.ToImmutableArray();
         Diagnostics.AddRange(lexer.Diagnostics);
     }
@@ -49,6 +47,7 @@ internal sealed class Parser
             SyntaxKind.OpenBraceToken => ParseBlockStatement(),
             SyntaxKind.ConstKeyword or SyntaxKind.VarKeyword => ParseVariableDeclarationStatement(),
             SyntaxKind.IfKeyword => ParseIfStatement(),
+            SyntaxKind.WhileKeyword => ParseWhileStatement(),
             _ => ParseExpressionStatement(),
         };
     }
@@ -89,6 +88,15 @@ internal sealed class Parser
         ElseClauseSyntax? elseStatement = ParseElseClause();
 
         return new IfStatementSyntax(ifKeyword, condition, thenStatement, elseStatement);
+    }
+
+    private WhileStatementSyntax ParseWhileStatement()
+    {
+        SyntaxToken whileKeyword = MatchToken(SyntaxKind.WhileKeyword);
+        ExpressionSyntax condition = ParseExpression();
+        StatementSyntax body = ParseStatement();
+
+        return new WhileStatementSyntax(whileKeyword, condition, body);
     }
 
     private ElseClauseSyntax? ParseElseClause()
