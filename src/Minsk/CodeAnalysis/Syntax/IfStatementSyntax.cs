@@ -10,12 +10,12 @@ public sealed class IfStatementSyntax : StatementSyntax
         ElseClause = elseClause;
     }
 
+    public override SyntaxKind Kind => SyntaxKind.IfStatement;
+
     public SyntaxToken IfKeyword { get; }
     public ExpressionSyntax Condition { get; }
     public StatementSyntax ThenStatement { get; }
     public ElseClauseSyntax? ElseClause { get; }
-
-    public override SyntaxKind Kind => SyntaxKind.IfStatement;
 
     public override IEnumerable<SyntaxNode> GetChildren()
     {

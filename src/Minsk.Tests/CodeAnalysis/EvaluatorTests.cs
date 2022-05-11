@@ -54,6 +54,7 @@ public class EvaluatorTests
     [InlineData("const d = 200", 200)]
     [InlineData("{ const x = 3 if (x < 2) { x } else { 2 } }", 2)]
     [InlineData("{ var x = 3 if (x == 3) { x = 10 x } }", 10)]
+    [InlineData("{ var i = 10 var result = 0 while (i > 0) { result = result + i i = i - 1 } result }", 55)]
     public void Compilation_Evaluate_ShouldReturnTheCorrectValue(string text, object expectedValue)
     {
         // Arrange
