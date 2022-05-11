@@ -55,6 +55,8 @@ public class EvaluatorTests
     [InlineData("{ const x = 3 if (x < 2) { x } else { 2 } }", 2)]
     [InlineData("{ var x = 3 if (x == 3) { x = 10 x } }", 10)]
     [InlineData("{ var i = 10 var result = 0 while (i > 0) { result = result + i i = i - 1 } result }", 55)]
+    [InlineData("{ var result = 0 for var i = 10 i > 0 i = i -1 { result = result + i } result }", 55)]
+    [InlineData("{ var result = 5 for var i = 10 i > 0 i = i -1 { var result = 3 result = 20 } result }", 5)] // ensure new scope
     public void Compilation_Evaluate_ShouldReturnTheCorrectValue(string text, object expectedValue)
     {
         // Arrange

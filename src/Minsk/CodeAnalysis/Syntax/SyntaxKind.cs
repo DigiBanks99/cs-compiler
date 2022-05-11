@@ -28,11 +28,12 @@ public enum SyntaxKind
     IdentifierToken,
 
     // Keywords
-    FalseKeyword,
-    TrueKeyword,
-    IfKeyword,
-    ElseKeyword,
     ConstKeyword,
+    ElseKeyword,
+    FalseKeyword,
+    ForKeyword,
+    IfKeyword,
+    TrueKeyword,
     VarKeyword,
     WhileKeyword,
 
@@ -45,6 +46,7 @@ public enum SyntaxKind
     VariableDeclaration,
     IfStatement,
     WhileStatement,
+    ForStatement,
     ExpressionStatement,
 
     // Expressions

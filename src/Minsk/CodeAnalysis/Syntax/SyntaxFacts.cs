@@ -33,11 +33,12 @@ public static class SyntaxFacts
     {
         return text switch
         {
-            "true" => SyntaxKind.TrueKeyword,
-            "false" => SyntaxKind.FalseKeyword,
-            "if" => SyntaxKind.IfKeyword,
-            "else" => SyntaxKind.ElseKeyword,
             "const" => SyntaxKind.ConstKeyword,
+            "else" => SyntaxKind.ElseKeyword,
+            "false" => SyntaxKind.FalseKeyword,
+            "for" => SyntaxKind.ForKeyword,
+            "if" => SyntaxKind.IfKeyword,
+            "true" => SyntaxKind.TrueKeyword,
             "var" => SyntaxKind.VarKeyword,
             "while" => SyntaxKind.WhileKeyword,
             _ => SyntaxKind.IdentifierToken,
@@ -90,11 +91,12 @@ public static class SyntaxFacts
             SyntaxKind.CloseParenthesisToken => ")",
             SyntaxKind.OpenBraceToken => "{",
             SyntaxKind.CloseBraceToken => "}",
-            SyntaxKind.FalseKeyword => "false",
-            SyntaxKind.TrueKeyword => "true",
-            SyntaxKind.IfKeyword => "if",
-            SyntaxKind.ElseKeyword => "else",
             SyntaxKind.ConstKeyword => "const",
+            SyntaxKind.ElseKeyword => "else",
+            SyntaxKind.FalseKeyword => "false",
+            SyntaxKind.ForKeyword => "for",
+            SyntaxKind.IfKeyword => "if",
+            SyntaxKind.TrueKeyword => "true",
             SyntaxKind.VarKeyword => "var",
             SyntaxKind.WhileKeyword => "while",
             _ => null

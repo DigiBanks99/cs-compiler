@@ -29,6 +29,7 @@ internal sealed class Evaluator
             case BoundNodeKind.VariableDeclaration: EvaluateVariableDeclarationStatement((BoundVariableDeclarationStatement)node); break;
             case BoundNodeKind.IfStatement: EvaluateIfStatement((BoundIfStatement)node); break;
             case BoundNodeKind.WhileStatement: EvaluateWhileStatement((BoundWhileStatement)node); break;
+            case BoundNodeKind.ForStatement: EvaluateForStatement((BoundForStatement)node); break;
             case BoundNodeKind.ExpressionStatement: EvaluateExpressionStatement((BoundExpressionStatement)node); break;
             default: throw new Exception($"Unexpected node {node.Kind}");
         }
@@ -67,6 +68,19 @@ internal sealed class Evaluator
         while ((bool?)EvaluateExpression(node.Condition) ?? false)
         {
             EvaluateStatement(node.Body);
+        }
+    }
+
+    private void EvaluateForStatement(BoundForStatement node)
+    {
+        var value = EvaluateExpression(node.VariableDeclaration.Initializer);
+        _variables[node.VariableDeclaration.Variable] = value;
+        _lastValue = value;
+
+        while ((bool?)EvaluateExpression(node.Condition) ?? false)
+        {
+            EvaluateStatement(node.Body);
+            EvaluateStatement(node.Increment);
         }
     }
 
