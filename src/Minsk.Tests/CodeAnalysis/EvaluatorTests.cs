@@ -1,6 +1,7 @@
 using Minsk.CodeAnalysis.Syntax;
 using Minsk.CodeAnalysis.Text;
 
+using System;
 using System.Collections.Generic;
 
 using Xunit;
@@ -160,6 +161,81 @@ public class EvaluatorTests
         AssertHasDiagnostics(text, new string[] { expectedDiagnostic });
     }
 
+    [Fact]
+    public void Compilation_IfStatement_Reports_CannotConvert()
+    {
+        // Arrange
+        var text = @"
+            {
+                var x = 0
+                if [(x)]
+                {
+                    x = 10
+                }
+            }
+        ";
+        var expectedDiagnostic = "Cannot convert 'System.Int32' to 'System.Boolean'.";
+
+        // Assert
+        AssertHasDiagnostics(text, new string[] { expectedDiagnostic });
+    }
+
+    [Fact]
+    public void Compilation_WhileStatement_Reports_CannotConvert()
+    {
+        // Arrange
+        var text = @"
+            {
+                var x = 0
+                while [(x)]
+                {
+                    x = 10
+                }
+            }
+        ";
+        var expectedDiagnostic = "Cannot convert 'System.Int32' to 'System.Boolean'.";
+
+        // Assert
+        AssertHasDiagnostics(text, new string[] { expectedDiagnostic });
+    }
+
+    [Fact]
+    public void Compilation_ForStatement_Throws_UnnamedVariableException()
+    {
+        // Arrange
+        var text = @"
+            {
+                var i = 0
+                for [true] i < 10 i = i + 1
+                {
+                    10
+                }
+            }
+        ";
+        var expectedExceptionMessage = "Unnamed variable: 36...40";
+
+        // Assert
+        AssertException(text, expectedExceptionMessage);
+    }
+
+    [Fact]
+    public void Compilation_ForStatement_Reports_CannotConvert()
+    {
+        // Arrange
+        var text = @"
+            {
+                for var i = 0 [(i)] i = i + 1
+                {
+                    10
+                }
+            }
+        ";
+        var expectedDiagnostic = "Cannot convert 'System.Int32' to 'System.Boolean'.";
+
+        // Assert
+        AssertHasDiagnostics(text, new string[] { expectedDiagnostic });
+    }
+
     private static void AssertHasDiagnostics(string text, string[] expectedDiagnostics)
     {
         var annotatedText = AnnotatedText.Parse(text);
@@ -176,5 +252,18 @@ public class EvaluatorTests
             Assert.Equal(expectedDiagnostics[i], result.Diagnostics[i].Message);
             Assert.Equal(annotatedText.Spans[i], result.Diagnostics[i].Span);
         }
+    }
+
+    private static void AssertException(string text, string exceptionMessage)
+    {
+        var annotatedText = AnnotatedText.Parse(text);
+        var syntaxTree = SyntaxTree.Parse(annotatedText.Text);
+        Compilation compilation = new(syntaxTree);
+
+        // Act
+        Exception ex = Assert.Throws<Exception>(() => compilation.Evaluate(new Dictionary<VariableSymbol, object?>()));
+
+        // Assert
+        Assert.Equal(exceptionMessage, ex.Message);
     }
 }
