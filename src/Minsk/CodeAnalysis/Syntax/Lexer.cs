@@ -65,6 +65,10 @@ internal sealed class Lexer
                 _kind = SyntaxKind.CloseBraceToken;
                 _position++;
                 break;
+            case ';':
+                _kind = SyntaxKind.SemicolonToken;
+                _position++;
+                break;
             case '&':
                 if (Lookahead == '&')
                 {
@@ -105,7 +109,7 @@ internal sealed class Lexer
                     _kind = SyntaxKind.BangEqualsToken;
                 }
                 break;
-            case '<': 
+            case '<':
                 _position++;
                 if (Current != '=')
                 {
@@ -115,8 +119,9 @@ internal sealed class Lexer
                 {
                     _position++;
                     _kind = SyntaxKind.LessOrEqualsToken;
-                }break;
-            case '>': 
+                }
+                break;
+            case '>':
                 _position++;
                 if (Current != '=')
                 {
@@ -126,7 +131,8 @@ internal sealed class Lexer
                 {
                     _position++;
                     _kind = SyntaxKind.GreaterOrEqualsToken;
-                }break;
+                }
+                break;
             case '0':
             case '1':
             case '2':
@@ -218,5 +224,4 @@ internal sealed class Lexer
 
         _kind = SyntaxKind.WhitespaceToken;
     }
-
 }

@@ -91,6 +91,7 @@ public static class SyntaxFacts
             SyntaxKind.CloseParenthesisToken => ")",
             SyntaxKind.OpenBraceToken => "{",
             SyntaxKind.CloseBraceToken => "}",
+            SyntaxKind.SemicolonToken => ";",
             SyntaxKind.ConstKeyword => "const",
             SyntaxKind.ElseKeyword => "else",
             SyntaxKind.FalseKeyword => "false",

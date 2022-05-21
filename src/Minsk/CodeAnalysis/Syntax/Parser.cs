@@ -77,8 +77,9 @@ internal sealed class Parser
         SyntaxToken identifier = MatchToken(SyntaxKind.IdentifierToken);
         SyntaxToken equals = MatchToken(SyntaxKind.EqualsToken);
         ExpressionSyntax initializer = ParseExpression();
+        SyntaxToken semicolon = MatchToken(SyntaxKind.SemicolonToken);
 
-        return new VariableDeclarationStatementSyntax(keyword, identifier, equals, initializer);
+        return new VariableDeclarationStatementSyntax(keyword, identifier, equals, initializer, semicolon);
     }
 
     private IfStatementSyntax ParseIfStatement()
@@ -103,9 +104,12 @@ internal sealed class Parser
     private ForStatementSyntax ParseForStatement()
     {
         SyntaxToken forKeyword = MatchToken(SyntaxKind.ForKeyword);
+        MatchToken(SyntaxKind.OpenParenthesisToken);
         VariableDeclarationStatementSyntax initializer = ParseVariableDeclarationStatement();
         ExpressionSyntax condition = ParseExpression();
+        MatchToken(SyntaxKind.SemicolonToken);
         StatementSyntax increment = ParseStatement();
+        MatchToken(SyntaxKind.CloseParenthesisToken);
         StatementSyntax body = ParseStatement();
 
         return new ForStatementSyntax(forKeyword, initializer, condition, increment, body);
@@ -126,17 +130,18 @@ internal sealed class Parser
     private ExpressionStatementSyntax ParseExpressionStatement()
     {
         ExpressionSyntax expression = ParseExpression();
-        return new ExpressionStatementSyntax(expression);
+        SyntaxToken semicolonToken = MatchToken(SyntaxKind.SemicolonToken);
+        return new ExpressionStatementSyntax(expression, semicolonToken);
     }
 
     private ExpressionSyntax ParseExpression()
     {
-        return ParseAssingmentExpression();
+        return ParseAssignmentExpression();
     }
 
-    private ExpressionSyntax ParseAssingmentExpression()
+    private ExpressionSyntax ParseAssignmentExpression()
     {
-        // a + b + 5
+        // a + b + 5;
         //
         //     +
         //    / \
@@ -144,7 +149,7 @@ internal sealed class Parser
         //  /\
         // a b
         //
-        // a = b = 5
+        // a = b = 5;
         //
         //     =
         //    / \
@@ -155,9 +160,9 @@ internal sealed class Parser
         if (Peek(0).Kind == SyntaxKind.IdentifierToken
          && Peek(1).Kind == SyntaxKind.EqualsToken)
         {
-            var identifierToken = NextToken();
-            var operatorToken = NextToken();
-            var right = ParseAssingmentExpression();
+            SyntaxToken identifierToken = NextToken();
+            SyntaxToken operatorToken = NextToken();
+            ExpressionSyntax right = ParseAssignmentExpression();
             return new AssignmentExpressionSyntax(identifierToken, operatorToken, right);
         }
 
@@ -170,8 +175,8 @@ internal sealed class Parser
         var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
         if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
         {
-            var operatorToken = NextToken();
-            var operand = ParseBinaryExpression(unaryOperatorPrecedence);
+            SyntaxToken operatorToken = NextToken();
+            ExpressionSyntax operand = ParseBinaryExpression(unaryOperatorPrecedence);
             left = new UnaryExpressionSyntax(operatorToken, operand);
         }
         else
@@ -187,8 +192,8 @@ internal sealed class Parser
                 break;
             }
 
-            var operatorToken = NextToken();
-            var right = ParseBinaryExpression(precedence);
+            SyntaxToken operatorToken = NextToken();
+            ExpressionSyntax right = ParseBinaryExpression(precedence);
             left = new BinaryExpressionSyntax(left, operatorToken, right);
         }
 
@@ -208,22 +213,22 @@ internal sealed class Parser
 
     private ExpressionSyntax ParseParenthesizedExpression()
     {
-        var left = MatchToken(SyntaxKind.OpenParenthesisToken);
-        var expression = ParseExpression();
-        var right = MatchToken(SyntaxKind.CloseParenthesisToken);
+        SyntaxToken left = MatchToken(SyntaxKind.OpenParenthesisToken);
+        ExpressionSyntax expression = ParseExpression();
+        SyntaxToken right = MatchToken(SyntaxKind.CloseParenthesisToken);
         return new ParenthesizedExpressionSyntax(left, expression, right);
     }
 
     private ExpressionSyntax ParseBooleanLiteral()
     {
-        var isTrue = Current.Kind == SyntaxKind.TrueKeyword;
-        var keywordToken = isTrue ? MatchToken(SyntaxKind.TrueKeyword) : MatchToken(SyntaxKind.FalseKeyword);
+        bool isTrue = Current.Kind == SyntaxKind.TrueKeyword;
+        SyntaxToken keywordToken = isTrue ? MatchToken(SyntaxKind.TrueKeyword) : MatchToken(SyntaxKind.FalseKeyword);
         return new LiteralExpressionSyntax(keywordToken, isTrue);
     }
 
     private ExpressionSyntax ParseNumberLiteral()
     {
-        var numberToken = MatchToken(SyntaxKind.NumberToken);
+        SyntaxToken numberToken = MatchToken(SyntaxKind.NumberToken);
         return new LiteralExpressionSyntax(numberToken);
     }
 
