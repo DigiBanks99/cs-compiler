@@ -110,6 +110,20 @@ public class EvaluatorTests
     }
 
     [Fact]
+    public void Compilation_Name_Reports_NoErrorForInsertedToken()
+    {
+        // Arrange
+        var text = @"[][]";
+
+        // Assert
+        AssertHasDiagnostics(text, new string[]
+        {
+            "Unexpected token <EndOfFileToken>, expected <IdentifierToken>.",
+            "Unexpected token <EndOfFileToken>, expected <SemicolonToken>."
+        });
+    }
+
+    [Fact]
     public void Compilation_Assignment_Reports_Readonly()
     {
         // Arrange
@@ -234,6 +248,23 @@ public class EvaluatorTests
 
         // Assert
         AssertHasDiagnostics(text, new string[] { expectedDiagnostic });
+    }
+
+    [Fact]
+    public void Compilation_BlockStatement_Handles_InfiniteLoop()
+    {
+        var text = @"
+        {
+            [[)]][]
+        ";
+
+        // Assert
+        AssertHasDiagnostics(text, new string[]
+        {
+            "Unexpected token <CloseParenthesisToken>, expected <IdentifierToken>.",
+            "Unexpected token <CloseParenthesisToken>, expected <SemicolonToken>.",
+            "Unexpected token <EndOfFileToken>, expected <CloseBraceToken>."
+        });
     }
 
     private static void AssertHasDiagnostics(string text, string[] expectedDiagnostics)
