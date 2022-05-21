@@ -223,7 +223,13 @@ internal sealed class Binder
 
     private BoundExpression BindNameExpression(NameExpressionSyntax syntax)
     {
-        var name = syntax.IdentifierToken.Text ?? "Empty String";
+        var name = syntax.IdentifierToken.Text;
+        if (string.IsNullOrEmpty(name))
+        {
+            // This means the token was inserted by the parser and shouldn't be bound as the error was reported.
+            return new BoundLiteralExpression(0);
+        }
+
         if (_scope.TryLookup(name, out VariableSymbol? variable))
         {
             return new BoundVariableExpression(variable!);
