@@ -26,6 +26,7 @@ public enum SyntaxKind
     OpenBraceToken,
     CloseBraceToken,
     IdentifierToken,
+    SemicolonToken,
 
     // Keywords
     ConstKeyword,

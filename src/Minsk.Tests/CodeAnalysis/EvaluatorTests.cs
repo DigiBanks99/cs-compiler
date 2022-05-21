@@ -11,53 +11,53 @@ namespace Minsk.CodeAnalysis;
 public class EvaluatorTests
 {
     [Theory]
-    [InlineData("1", 1)]
-    [InlineData("+1", 1)]
-    [InlineData("-1", -1)]
-    [InlineData("1 + 2", 3)]
-    [InlineData("4 * 2", 8)]
-    [InlineData("1 - 2", -1)]
-    [InlineData("12 - 2", 10)]
-    [InlineData("6 / 3", 2)]
-    [InlineData("(6 / 3)", 2)]
-    [InlineData("(10)", 10)]
-    [InlineData("true", true)]
-    [InlineData("false", false)]
-    [InlineData("!true", false)]
-    [InlineData("!false", true)]
-    [InlineData("12 == 10", false)]
-    [InlineData("27 == 27", true)]
-    [InlineData("12 != 10", true)]
-    [InlineData("27 != 27", false)]
-    [InlineData("3 < 3", false)]
-    [InlineData("4 < 3", false)]
-    [InlineData("3 < 4", true)]
-    [InlineData("3 <= 3", true)]
-    [InlineData("4 <= 3", false)]
-    [InlineData("3 <= 4", true)]
-    [InlineData("3 > 3", false)]
-    [InlineData("4 > 3", true)]
-    [InlineData("3 > 4", false)]
-    [InlineData("3 >= 3", true)]
-    [InlineData("4 >= 3", true)]
-    [InlineData("3 >= 4", false)]
-    [InlineData("false == false", true)]
-    [InlineData("false != false", false)]
-    [InlineData("true == false", false)]
-    [InlineData("true != false", true)]
-    [InlineData("true && true", true)]
-    [InlineData("false && true", false)]
-    [InlineData("false || true", true)]
-    [InlineData("false || false", false)]
-    [InlineData("var a = 42", 42)]
-    [InlineData("var b = -4", -4)]
-    [InlineData("{ var c = 10\nc * 10 }", 100)]
-    [InlineData("const d = 200", 200)]
-    [InlineData("{ const x = 3 if (x < 2) { x } else { 2 } }", 2)]
-    [InlineData("{ var x = 3 if (x == 3) { x = 10 x } }", 10)]
-    [InlineData("{ var i = 10 var result = 0 while (i > 0) { result = result + i i = i - 1 } result }", 55)]
-    [InlineData("{ var result = 0 for var i = 10 i > 0 i = i -1 { result = result + i } result }", 55)]
-    [InlineData("{ var result = 5 for var i = 10 i > 0 i = i -1 { var result = 3 result = 20 } result }", 5)] // ensure new scope
+    [InlineData("1;", 1)]
+    [InlineData("+1;", 1)]
+    [InlineData("-1;", -1)]
+    [InlineData("1 + 2;", 3)]
+    [InlineData("4 * 2;", 8)]
+    [InlineData("1 - 2;", -1)]
+    [InlineData("12 - 2;", 10)]
+    [InlineData("6 / 3;", 2)]
+    [InlineData("(6 / 3);", 2)]
+    [InlineData("(10);", 10)]
+    [InlineData("true;", true)]
+    [InlineData("false;", false)]
+    [InlineData("!true;", false)]
+    [InlineData("!false;", true)]
+    [InlineData("12 == 10;", false)]
+    [InlineData("27 == 27;", true)]
+    [InlineData("12 != 10;", true)]
+    [InlineData("27 != 27;", false)]
+    [InlineData("3 < 3;", false)]
+    [InlineData("4 < 3;", false)]
+    [InlineData("3 < 4;", true)]
+    [InlineData("3 <= 3;", true)]
+    [InlineData("4 <= 3;", false)]
+    [InlineData("3 <= 4;", true)]
+    [InlineData("3 > 3;", false)]
+    [InlineData("4 > 3;", true)]
+    [InlineData("3 > 4;", false)]
+    [InlineData("3 >= 3;", true)]
+    [InlineData("4 >= 3;", true)]
+    [InlineData("3 >= 4;", false)]
+    [InlineData("false == false;", true)]
+    [InlineData("false != false;", false)]
+    [InlineData("true == false;", false)]
+    [InlineData("true != false;", true)]
+    [InlineData("true && true;", true)]
+    [InlineData("false && true;", false)]
+    [InlineData("false || true;", true)]
+    [InlineData("false || false;", false)]
+    [InlineData("var a = 42;", 42)]
+    [InlineData("var b = -4;", -4)]
+    [InlineData("{ var c = 10; c * 10; }", 100)]
+    [InlineData("const d = 200;", 200)]
+    [InlineData("{ const x = 3; if (x < 2) { x; } else { 2; } }", 2)]
+    [InlineData("{ var x = 3; if (x == 3) { x = 10; x; } }", 10)]
+    [InlineData("{ var i = 10; var result = 0; while (i > 0) { result = result + i; i = i - 1; } result; }", 55)]
+    [InlineData("{ var result = 0; for (var i = 10; i > 0; i = i -1;) { result = result + i; } result; }", 55)]
+    [InlineData("{ var result = 5; for (var i = 10; i > 0; i = i -1;) { var result = 3; result = 20; } result; }", 5)] // ensure new scope
     public void Compilation_Evaluate_ShouldReturnTheCorrectValue(string text, object expectedValue)
     {
         // Arrange
@@ -79,12 +79,12 @@ public class EvaluatorTests
         // Arrange
         var text = @"
         {
-            var a = 10
-            var b = 100
+            var a = 10;
+            var b = 100;
             {
-                var a = false
+                var a = false;
             }
-            var [b] = 10
+            var [b] = 10;
         }
         ";
 
@@ -100,7 +100,7 @@ public class EvaluatorTests
         // Arrange
         var text = @"
         {
-            [a] + 10
+            [a] + 10;
         }
         ";
 
@@ -115,8 +115,8 @@ public class EvaluatorTests
         // Arrange
         var text = @"
         {
-            const a = 10
-            a [=] 20
+            const a = 10;
+            a [=] 20;
         }";
         var expectedDiagnostic = "Variable 'a' is readonly and cannot be assigned a new value.";
 
@@ -130,8 +130,8 @@ public class EvaluatorTests
         // Arrange
         var text = @"
         {
-            var a = false
-            a = [20]
+            var a = false;
+            a = [20];
         }";
         var expectedDiagnostic = "Cannot convert 'System.Int32' to 'System.Boolean'.";
 
@@ -143,7 +143,7 @@ public class EvaluatorTests
     public void Compilation_Unary_Reports_UndefinedOperator()
     {
         // Arrange
-        var text = @"[+]true";
+        var text = @"[+]true;";
         var expectedDiagnostic = "Unary operator '+' is not defined for type 'System.Boolean'.";
 
         // Assert
@@ -154,7 +154,7 @@ public class EvaluatorTests
     public void Compilation_Binary_Reports_UndefinedOperator()
     {
         // Arrange
-        var text = @"true [+] 10";
+        var text = @"true [+] 10;";
         var expectedDiagnostic = "Binary operator '+' is not defined for types 'System.Boolean' and 'System.Int32'.";
 
         // Assert
@@ -167,10 +167,10 @@ public class EvaluatorTests
         // Arrange
         var text = @"
             {
-                var x = 0
+                var x = 0;
                 if [(x)]
                 {
-                    x = 10
+                    x = 10;
                 }
             }
         ";
@@ -186,10 +186,10 @@ public class EvaluatorTests
         // Arrange
         var text = @"
             {
-                var x = 0
+                var x = 0;
                 while [(x)]
                 {
-                    x = 10
+                    x = 10;
                 }
             }
         ";
@@ -205,14 +205,14 @@ public class EvaluatorTests
         // Arrange
         var text = @"
             {
-                var i = 0
-                for [true] i < 10 i = i + 1
+                var i = 0;
+                for [true]; i < 10; i = i + 1;
                 {
-                    10
+                    10;
                 }
             }
         ";
-        var expectedExceptionMessage = "Unnamed variable: 36...40";
+        var expectedExceptionMessage = "Unnamed variable: 37...42";
 
         // Assert
         AssertException(text, expectedExceptionMessage);
@@ -224,9 +224,9 @@ public class EvaluatorTests
         // Arrange
         var text = @"
             {
-                for var i = 0 [(i)] i = i + 1
+                for (var i = 0; [(i)]; i = i + 1;)
                 {
-                    10
+                    10;
                 }
             }
         ";

@@ -2,7 +2,9 @@ namespace Minsk.CodeAnalysis.Syntax;
 
 public sealed class AssignmentExpressionSyntax : ExpressionSyntax
 {
-    public AssignmentExpressionSyntax(SyntaxToken identifierToken, SyntaxToken equalsToken, ExpressionSyntax expression)
+    public AssignmentExpressionSyntax(SyntaxToken identifierToken,
+                                      SyntaxToken equalsToken,
+                                      ExpressionSyntax expression)
     {
         IdentifierToken = identifierToken;
         EqualsToken = equalsToken;
